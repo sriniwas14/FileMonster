@@ -8,27 +8,48 @@ const (
 	visibleItems = 20
 )
 
-func (m Model) listRender() string {
+func getIcon(t FileType) string {
+	if t == FileDir {
+		return "\ueaf7"
+	} else {
+		return "\uea7b"
+	}
+}
+
+func (list *List) setTitle(title string) {
+	list.title = title
+}
+
+func (l *List) listRender() string {
 	start := 0
 	end := visibleItems
 
-	if m.list.cursor > visibleItems {
-		start = m.list.cursor - visibleItems + 1
+	if l.cursor > visibleItems {
+		start = l.cursor - visibleItems + 1
 		end = start + visibleItems
 	}
 
-	if end > len(m.list.items) {
-		end = len(m.list.items)
+	if end > len(l.items) {
+		end = len(l.items)
 	}
 
-	list := paneStyleBottomBorder.Render(m.path) + "\n"
-	for i, f := range m.list.items[start:end] {
-		if i == m.list.cursor-start {
-			list += fmt.Sprintf(listStyleSelectedItem.Render("\ueaf7 %s")+"\n", f.name)
+	list := ""
+	if l.showTitle {
+		list = paneStyleBottomBorder.Render(padX(l.title, l.width)) + "\n"
+	}
+	for i, f := range l.items[start:end] {
+		if i == l.cursor-start {
+			list += fmt.Sprintf(
+				listStyleSelectedItem.Render("%s %s")+"\n",
+				getIcon(f.itemType),
+				f.name,
+			)
 		} else {
-			list += fmt.Sprintf(listStyleItem.Render("\ueaf7 %s")+"\n", f.name)
+			list += fmt.Sprintf(listStyleItem.Render("%s %s")+"\n", getIcon(f.itemType), f.name)
 		}
 	}
 
-	return paneStyleBorder.Render(list)
+	list += padX("", l.width) + "\n"
+
+	return paneStyleBorder.Render(padY(list, l.height))
 }

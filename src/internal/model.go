@@ -1,10 +1,10 @@
 package internal
 
 import (
-	"log"
 	"path/filepath"
 
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 	"github.com/charmbracelet/x/term"
 )
 
@@ -29,7 +29,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 			break
 		case "left":
-			m.path = filepath.Dir(m.path)
+			m.list.title = filepath.Dir(m.list.title)
 			m.list.cursor = 0
 			break
 		case "right":
@@ -39,7 +39,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 			if selected.itemType == FileDir {
 				m.list.cursor = 0
-				m.path += "/" + selected.name
+				m.list.title += "/" + selected.name
 			}
 			break
 		}
@@ -59,21 +59,40 @@ func (m Model) View() string {
 	m.width = w
 	m.height = h
 
-	log.Println(w, h)
+	files := getFiles(m.list.title)
+	list := m.list
+	list.items = files
+	list.width = (w / 2) - 2
+	list.height = ((h / 3) * 2) - 2
+	v = list.listRender()
 
-	files := getFiles(m.path)
-	m.list.items = files
-	v += m.listRender()
+	selected := list.items[list.cursor]
+	r := ""
+	if selected.itemType == FileDir {
+		subPath := filepath.Join(m.list.title, selected.name)
+		files := getFiles(subPath)
+		lr := List{
+			title:     subPath,
+			width:     list.width,
+			height:    list.height,
+			items:     files,
+			cursor:    0,
+			showTitle: false,
+		}
+		r = lr.listRender()
+	}
 
-	return v
+	return lipgloss.JoinHorizontal(0, v, r)
 }
 
 func Start(path string) Model {
 	return Model{
 		path: path,
 		list: &List{
-			items:  []File{},
-			cursor: 0,
+			items:     []File{},
+			cursor:    0,
+			title:     path,
+			showTitle: true,
 		},
 	}
 }

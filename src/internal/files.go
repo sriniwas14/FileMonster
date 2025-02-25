@@ -10,7 +10,7 @@ func getFiles(path string) []File {
 	}
 
 	files := []File{
-		{name: "..", itemType: FileDir, mimeType: "folder"},
+		//	{name: "..", itemType: FileDir, mimeType: "folder"},
 	}
 
 	for _, item := range items {
