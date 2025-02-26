@@ -5,7 +5,7 @@ import (
 )
 
 const (
-	visibleItems = 20
+	visibleItems = 15
 )
 
 func getIcon(t FileType) string {
@@ -16,11 +16,7 @@ func getIcon(t FileType) string {
 	}
 }
 
-func (list *List) setTitle(title string) {
-	list.title = title
-}
-
-func (l *List) listRender() string {
+func (l *List) Render() string {
 	start := 0
 	end := visibleItems
 

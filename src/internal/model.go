@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"log"
 	"path/filepath"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -17,7 +18,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "q":
-			return nil, tea.Quit
+			return m, tea.Quit
 		case "up":
 			if m.list.cursor > 0 {
 				m.list.cursor -= 1
@@ -64,12 +65,22 @@ func (m Model) View() string {
 	list.items = files
 	list.width = (w / 2) - 2
 	list.height = ((h / 3) * 2) - 2
-	v = list.listRender()
+	v = list.Render()
 
 	selected := list.items[list.cursor]
+	fileInfo := getFileInfo(filepath.Join(list.title, selected.name))
+	if fileInfo == nil {
+		log.Println("error reading file information")
+	}
+
+	fileInfo.width = (w / 3) - 2
+	fileInfo.height = (h / 3) - 1
+	infoView := fileInfo.Render()
+
+	subPath := filepath.Join(m.list.title, selected.name)
+
 	r := ""
 	if selected.itemType == FileDir {
-		subPath := filepath.Join(m.list.title, selected.name)
 		files := getFiles(subPath)
 		lr := List{
 			title:     subPath,
@@ -79,10 +90,19 @@ func (m Model) View() string {
 			cursor:    0,
 			showTitle: false,
 		}
-		r = lr.listRender()
+		r = lr.Render()
+	} else {
+		contents := getFileContents(subPath)
+		r = contents
+		r += padX("", (w/2)-2)
+		r = fitY(r, ((h/3)*2)-2)
+		r = paneStyleBorder.Render(r)
 	}
 
-	return lipgloss.JoinHorizontal(0, v, r)
+	top := lipgloss.JoinHorizontal(0, v, r)
+	bottom := infoView
+
+	return lipgloss.JoinVertical(0, top, bottom)
 }
 
 func Start(path string) Model {

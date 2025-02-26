@@ -23,6 +23,16 @@ const (
 	FileFile
 )
 
+type FileInfo struct {
+	filePath    string
+	size        int64
+	permissions string
+	created     string
+	modified    string
+	width       int
+	height      int
+}
+
 type File struct {
 	name     string
 	itemType FileType

@@ -1,17 +1,23 @@
 package internal
 
-import "os"
+import (
+	"errors"
+	"log"
+	"os"
+)
 
 func getFiles(path string) []File {
 	items, err := os.ReadDir(path)
 
 	if err != nil {
-		panic(err)
+		if errors.Is(err, os.ErrPermission) {
+			log.Println(err)
+			return []File{}
+		}
+
 	}
 
-	files := []File{
-		//	{name: "..", itemType: FileDir, mimeType: "folder"},
-	}
+	files := []File{}
 
 	for _, item := range items {
 		fileType := FileFile
@@ -27,4 +33,19 @@ func getFiles(path string) []File {
 	}
 
 	return files
+}
+
+func getFileContents(filepath string) string {
+	file, err := os.Open(filepath)
+	if err != nil {
+		log.Println(err)
+		return ""
+	}
+	defer file.Close()
+	n := 1536
+	buffer := make([]byte, n)
+
+	bytesRead, err := file.Read(buffer)
+
+	return string(buffer[:bytesRead])
 }
