@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"log"
 	"path/filepath"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -40,7 +39,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 			if selected.itemType == FileDir {
 				m.list.cursor = 0
-				m.list.title += "/" + selected.name
+				m.list.title = filepath.Join(m.list.title, selected.name)
 			}
 			break
 		}
@@ -69,9 +68,6 @@ func (m Model) View() string {
 
 	selected := list.items[list.cursor]
 	fileInfo := getFileInfo(filepath.Join(list.title, selected.name))
-	if fileInfo == nil {
-		log.Println("error reading file information")
-	}
 
 	fileInfo.width = (w / 3) - 2
 	fileInfo.height = (h / 3) - 1

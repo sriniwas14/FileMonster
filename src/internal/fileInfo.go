@@ -10,9 +10,12 @@ import (
 func getFileInfo(filePath string) *FileInfo {
 	info, err := os.Stat(filePath)
 	if err != nil {
+		log.Println(err)
 		if errors.Is(err, os.ErrPermission) {
-			log.Println(err)
-			return nil
+			return &FileInfo{}
+		}
+		if errors.Is(err, os.ErrNotExist) {
+			return &FileInfo{}
 		}
 	}
 

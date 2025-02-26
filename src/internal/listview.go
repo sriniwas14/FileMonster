@@ -2,18 +2,32 @@ package internal
 
 import (
 	"fmt"
+	"strings"
 )
 
 const (
 	visibleItems = 15
 )
 
-func getIcon(t FileType) string {
+func getIcon(filename string, t FileType) string {
+	icon := ""
 	if t == FileDir {
 		return "\ueaf7"
 	} else {
-		return "\uea7b"
+		// Get extension
+		nameParts := strings.Split(filename, ".")
+
+		if len(nameParts) > 1 {
+			icon = FileIcons[nameParts[1]]
+		} else {
+			icon = FileIcons[strings.ToLower(nameParts[0])]
+		}
+
+		if icon == "" {
+			icon = "\uea7b"
+		}
 	}
+	return icon
 }
 
 func (l *List) Render() string {
@@ -37,11 +51,11 @@ func (l *List) Render() string {
 		if i == l.cursor-start {
 			list += fmt.Sprintf(
 				listStyleSelectedItem.Render("%s %s")+"\n",
-				getIcon(f.itemType),
+				getIcon(f.name, f.itemType),
 				f.name,
 			)
 		} else {
-			list += fmt.Sprintf(listStyleItem.Render("%s %s")+"\n", getIcon(f.itemType), f.name)
+			list += fmt.Sprintf(listStyleItem.Render("%s %s")+"\n", getIcon(f.name, f.itemType), f.name)
 		}
 	}
 
