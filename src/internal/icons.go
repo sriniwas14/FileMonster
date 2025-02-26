@@ -18,7 +18,7 @@ var FileIcons = map[string]string{
 	"css":        "\ue749",
 	"php":        "\ue608",
 	"rs":         "\ue68b",
-	"wav":        "\uf0e2a",
+	"wav":        "\uf001",
 	"zip":        "\ue6aa",
 	"py":         "\ued1b",
 	"txt":        "\uf15c",
@@ -31,5 +31,5 @@ var FileIcons = map[string]string{
 	"sh":         "\uf489",
 	"license":    "\ue60a",
 	"gitignore":  "\ue702",
-	"dockerfile": "\uef21f",
+	"dockerfile": "\uf21f",
 }
