@@ -16,6 +16,12 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
+		case "?":
+			m.showHelp = true
+			return m, nil
+		case "esc":
+			m.showHelp = false
+			return m, nil
 		case "q":
 			return m, tea.Quit
 		case "up":
@@ -59,6 +65,10 @@ func (m Model) View() string {
 	m.width = w
 	m.height = h
 
+	// Render Help
+	if m.showHelp {
+		return m.RenderDialog(70, 50, "Help", HELP_CONTENT)
+	}
 	files := getFiles(m.list.title)
 	list := m.list
 	list.items = files
@@ -98,6 +108,9 @@ func (m Model) View() string {
 	top := lipgloss.JoinHorizontal(0, v, r)
 	bottom := infoView
 
+	_ = paneStyleBorder.Render(
+		lipgloss.Place(20, 20, lipgloss.Center, lipgloss.Center, "Hello World"),
+	)
 	return lipgloss.JoinVertical(0, top, bottom)
 }
 
@@ -110,5 +123,6 @@ func Start(path string) Model {
 			title:     path,
 			showTitle: true,
 		},
+		showHelp: false,
 	}
 }

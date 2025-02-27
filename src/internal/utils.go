@@ -58,3 +58,40 @@ func getPrettySize(size float64) string {
 
 	return fmt.Sprintf("%.2f %s", value, stepSizeMap[step])
 }
+
+func genSpaces(count int) string {
+	if count <= 0 {
+		return ""
+	}
+	return strings.Repeat(" ", count)
+}
+
+func applyWidth(content string, width int) string {
+	lines := strings.Split(content, "\n")
+
+	for i, line := range lines {
+		spacesToAdd := width - len(line)
+		lines[i] = fmt.Sprintf("%s%s", line, genSpaces(spacesToAdd))
+	}
+
+	return strings.Join(lines, "\n")
+}
+
+func centerX(content string, screenWidth int) string {
+	lines := strings.Split(content, "\n")
+
+	for i, line := range lines {
+		sidePad := (screenWidth - len(line)) / 2
+		lines[i] = fmt.Sprintf("%s%s%s", genSpaces(sidePad), line, genSpaces(sidePad))
+	}
+
+	return strings.Join(lines, "\n")
+}
+
+func centerY(content string, screenHeight int) string {
+	lineCount := len(strings.Split(content, "\n"))
+	linesToAdd := (screenHeight - lineCount) / 2
+
+	v := strings.Repeat("\n", linesToAdd) + content + strings.Repeat("\n", linesToAdd)
+	return v
+}
