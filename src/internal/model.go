@@ -67,7 +67,7 @@ func (m Model) View() string {
 
 	// Render Help
 	if m.showHelp {
-		return m.RenderDialog(70, 50, "Help", HELP_CONTENT)
+		return m.RenderDialog(70, 50, HELP_CONTENT)
 	}
 	files := getFiles(m.list.title)
 	list := m.list
@@ -76,6 +76,7 @@ func (m Model) View() string {
 	list.height = ((h / 3) * 2) - 2
 	v = list.Render()
 
+	// File Info View
 	selected := list.items[list.cursor]
 	fileInfo := getFileInfo(filepath.Join(list.title, selected.name))
 
@@ -108,9 +109,6 @@ func (m Model) View() string {
 	top := lipgloss.JoinHorizontal(0, v, r)
 	bottom := infoView
 
-	_ = paneStyleBorder.Render(
-		lipgloss.Place(20, 20, lipgloss.Center, lipgloss.Center, "Hello World"),
-	)
 	return lipgloss.JoinVertical(0, top, bottom)
 }
 

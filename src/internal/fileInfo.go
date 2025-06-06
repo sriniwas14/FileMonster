@@ -35,7 +35,10 @@ func (f FileInfo) Render() string {
 		titleStyleColor.Render(padX(" Permissions", f.width))+"\n %s\n",
 		f.permissions,
 	)
-	value += fmt.Sprintf(titleStyleColor.Render(" Size")+"\n %s\n", getPrettySize(float64(f.size)))
+	value += fmt.Sprintf(
+		titleStyleColor.Render(" Size")+"\n %s\n",
+		getFormattedSize(float64(f.size)),
+	)
 	value += fmt.Sprintf(titleStyleColor.Render(" Created")+"\n %s\n", f.created)
 	value += fmt.Sprintf(titleStyleColor.Render(" Last Modified")+"\n %s\n", f.modified)
 

@@ -15,24 +15,12 @@ var stepSizeMap = map[int]string{
 
 func padX(str string, width int) string {
 	spacesReq := width - len(str)
-	spaces := ""
-
-	for range spacesReq {
-		spaces += " "
-	}
-
-	return str + spaces
+	return str + strings.Repeat(" ", spacesReq)
 }
 
 func padY(str string, height int) string {
 	spacesReq := height - len(strings.Split(str, "\n"))
-	spaces := ""
-
-	for range spacesReq {
-		spaces += "\n"
-	}
-
-	return str + spaces
+	return str + strings.Repeat("\n", spacesReq)
 }
 
 func fitY(str string, height int) string {
@@ -44,7 +32,7 @@ func fitY(str string, height int) string {
 	return padY(str, height)
 }
 
-func getPrettySize(size float64) string {
+func getFormattedSize(size float64) string {
 	value := size
 	step := 0
 
