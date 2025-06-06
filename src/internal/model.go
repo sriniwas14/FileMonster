@@ -1,6 +1,10 @@
 package internal
 
 import (
+	"fmt"
+	"os"
+	"os/exec"
+	"path"
 	"path/filepath"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -60,8 +64,20 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.list.title = filepath.Dir(m.list.title)
 			m.list.cursor = 0
 			break
-		case "right":
+		case "o":
+			selected := m.list.items[m.list.cursor]
+			fp := path.Join(m.path, selected.name)
+			cmd := exec.Command(os.Getenv("EDITOR"), fp)
+			cmd.Stdin = os.Stdin
+			cmd.Stdout = os.Stdout
+			cmd.Stderr = os.Stderr
+
+			err := cmd.Run()
+			if err != nil {
+				fmt.Println("Error launching vim:", err)
+			}
 			break
+		case "right":
 		case "enter":
 			selected := m.list.items[m.list.cursor]
 
