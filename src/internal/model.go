@@ -12,15 +12,37 @@ func (m Model) Init() tea.Cmd {
 	return nil
 }
 
+func (m *Model) handleTextInput(key string) {
+	switch key {
+	case "backspace":
+		if len(m.searchText) > 0 {
+			m.searchText = m.searchText[:len(m.searchText)-1]
+		}
+		break
+	default:
+		m.searchText += key
+	}
+}
+
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
+		default:
+			if m.showSearch {
+				m.handleTextInput(msg.String())
+				break
+			}
 		case "?":
 			m.showHelp = true
 			return m, nil
+		case "/":
+			m.showSearch = true
+			return m, nil
 		case "esc":
 			m.showHelp = false
+			m.showSearch = false
+			m.searchText = ""
 			return m, nil
 		case "q":
 			return m, tea.Quit
@@ -69,12 +91,13 @@ func (m Model) View() string {
 	if m.showHelp {
 		return m.RenderDialog(70, 50, HELP_CONTENT)
 	}
+
 	files := getFiles(m.list.title)
 	list := m.list
 	list.items = files
 	list.width = (w / 2) - 2
 	list.height = ((h / 3) * 2) - 2
-	v = list.Render()
+	v = list.Render(m.searchText)
 
 	// File Info View
 	selected := list.items[list.cursor]
@@ -97,7 +120,7 @@ func (m Model) View() string {
 			cursor:    0,
 			showTitle: false,
 		}
-		r = lr.Render()
+		r = lr.Render(m.searchText)
 	} else {
 		contents := getFileContents(subPath)
 		r = contents
@@ -109,7 +132,15 @@ func (m Model) View() string {
 	top := lipgloss.JoinHorizontal(0, v, r)
 	bottom := infoView
 
-	return lipgloss.JoinVertical(0, top, bottom)
+	mainbody := lipgloss.JoinVertical(0, top, bottom)
+
+	if !m.showSearch {
+		return mainbody
+	}
+
+	commandPane := "Search: " + m.searchText
+
+	return lipgloss.JoinVertical(0, mainbody, commandPane)
 }
 
 func Start(path string) Model {

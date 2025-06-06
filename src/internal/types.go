@@ -1,11 +1,13 @@
 package internal
 
 type Model struct {
-	path     string
-	list     *List
-	width    int
-	height   int
-	showHelp bool
+	path       string
+	list       *List
+	width      int
+	height     int
+	showHelp   bool
+	showSearch bool
+	searchText string
 }
 
 type List struct {

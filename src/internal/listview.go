@@ -30,7 +30,7 @@ func getIcon(filename string, t FileType) string {
 	return icon
 }
 
-func (l *List) Render() string {
+func (l *List) Render(search string) string {
 	start := 0
 	end := visibleItems
 
@@ -48,15 +48,24 @@ func (l *List) Render() string {
 		list = paneStyleBottomBorder.Render(padX(l.title, l.width)) + "\n"
 	}
 	for i, f := range l.items[start:end] {
+		// One is for files the other is for folders
+		temp := f.name
+
+		if len(search) > 0 && strings.Contains(temp, search) {
+			temp = fmt.Sprintf(listStyleSearchMatch.Render("%s"), temp)
+		}
+
 		if i == l.cursor-start {
-			list += fmt.Sprintf(
+			temp = fmt.Sprintf(
 				listStyleSelectedItem.Render("%s %s")+"\n",
 				getIcon(f.name, f.itemType),
-				f.name,
+				temp,
 			)
 		} else {
-			list += fmt.Sprintf(listStyleItem.Render("%s %s")+"\n", getIcon(f.name, f.itemType), f.name)
+			temp = fmt.Sprintf(listStyleItem.Render("%s %s")+"\n", getIcon(f.name, f.itemType), temp)
 		}
+
+		list += temp
 	}
 
 	list += padX("", l.width) + "\n"
