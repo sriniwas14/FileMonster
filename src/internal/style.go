@@ -11,7 +11,7 @@ var (
 				PaddingLeft(1)
 	paneStyleBorder = lipgloss.NewStyle().
 			Border(lipgloss.RoundedBorder()).
-			BorderForeground(lipgloss.Color("0"))
+			BorderForeground(lipgloss.Color("100"))
 	paneStyleBottomBorder = lipgloss.NewStyle().
 				Border(lipgloss.NormalBorder(), false, false, true, false).
 				BorderForeground(lipgloss.Color("0"))

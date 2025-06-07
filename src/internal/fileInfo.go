@@ -32,7 +32,7 @@ func getFileInfo(filePath string) *FileInfo {
 func (f FileInfo) Render() string {
 	value := ""
 	value += fmt.Sprintf(
-		titleStyleColor.Render(padX(" Permissions", f.width))+"\n %s\n",
+		titleStyleColor.Render(fitX(" Permissions", f.width))+"\n %s\n",
 		f.permissions,
 	)
 	value += fmt.Sprintf(
@@ -42,5 +42,5 @@ func (f FileInfo) Render() string {
 	value += fmt.Sprintf(titleStyleColor.Render(" Created")+"\n %s\n", f.created)
 	value += fmt.Sprintf(titleStyleColor.Render(" Last Modified")+"\n %s\n", f.modified)
 
-	return paneStyleBorder.Render(padY(value, f.height))
+	return paneStyleBorder.Render(fitY(value, f.height))
 }

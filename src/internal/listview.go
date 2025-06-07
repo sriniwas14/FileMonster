@@ -5,10 +5,6 @@ import (
 	"strings"
 )
 
-const (
-	visibleItems = 15
-)
-
 func getIcon(filename string, t FileType) string {
 	icon := ""
 	if t == FileDir {
@@ -31,6 +27,7 @@ func getIcon(filename string, t FileType) string {
 }
 
 func (l *List) Render(search string) string {
+	visibleItems := l.visibleItems
 	start := 0
 	end := visibleItems
 
@@ -70,5 +67,5 @@ func (l *List) Render(search string) string {
 
 	list += padX("", l.width) + "\n"
 
-	return paneStyleBorder.Render(padY(list, l.height))
+	return paneStyleBorder.Render(padY(list, l.visibleItems))
 }

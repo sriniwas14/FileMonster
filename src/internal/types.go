@@ -12,12 +12,13 @@ type Model struct {
 }
 
 type List struct {
-	items     []File
-	cursor    int
-	title     string
-	width     int
-	height    int
-	showTitle bool
+	visibleItems int
+	items        []File
+	cursor       int
+	title        string
+	width        int
+	height       int
+	showTitle    bool
 }
 
 type FileType int

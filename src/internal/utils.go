@@ -29,6 +29,27 @@ func padY(str string, height int) string {
 	return str + strings.Repeat("\n", spacesReq)
 }
 
+func fitX(str string, width int) string {
+	spacesReq := width - len(str)
+	if spacesReq < 0 {
+		lines := strings.Split(str, "\n")
+		for i, l := range lines {
+			if len(l) > width {
+				lines[i] = l[0:width]
+			}
+		}
+
+		return strings.Join(lines, "\n")
+	}
+
+	lines := strings.Split(str, "\n")
+	for i, l := range lines {
+		lines[i] = l + strings.Repeat(" ", spacesReq+2)
+	}
+
+	return strings.Join(lines, "\n")
+}
+
 func fitY(str string, height int) string {
 	lines := strings.Split(str, "\n")
 

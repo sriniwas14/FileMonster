@@ -106,6 +106,9 @@ func (m Model) View() string {
 		panic(err)
 	}
 
+	h -= 1
+	w -= 1
+
 	m.width = w
 	m.height = h
 
@@ -118,43 +121,45 @@ func (m Model) View() string {
 	list := m.list
 	list.items = files
 	list.width = (w / 2) - 2
-	list.height = ((h / 3) * 2) - 2
+	list.height = h - 2
+	m.list.visibleItems = h - 2
 	v = list.Render(m.searchText)
 
 	// File Info View
 	selected := list.items[list.cursor]
 	fileInfo := getFileInfo(filepath.Join(list.title, selected.name))
 
-	fileInfo.width = (w / 3) - 2
-	fileInfo.height = (h / 3) - 1
+	fileInfo.width = (w / 2) - 2
+	fileInfo.height = (h / 2) - 4
 	infoView := fileInfo.Render()
 
 	subPath := filepath.Join(m.list.title, selected.name)
 
-	r := ""
+	preview := ""
 	if selected.itemType == FileDir {
 		files := getFiles(subPath, m.showHidden)
 		lr := List{
-			title:     subPath,
-			width:     list.width,
-			height:    list.height,
-			items:     files,
-			cursor:    0,
-			showTitle: false,
+			title:        subPath,
+			width:        list.width,
+			height:       list.height,
+			items:        files,
+			cursor:       0,
+			visibleItems: (h / 2),
+			showTitle:    false,
 		}
-		r = lr.Render(m.searchText)
+		preview = lr.Render(m.searchText)
 	} else {
 		contents := getFileContents(subPath)
-		r = contents
-		r += padX("", (w/2)-2)
-		r = fitY(r, ((h/3)*2)-2)
-		r = paneStyleBorder.Render(r)
+		preview = contents
+		preview = fitX(preview, (w/2)-2)
+		preview = fitY(preview, h/2)
+		preview = paneStyleBorder.Render(preview)
 	}
 
-	top := lipgloss.JoinHorizontal(0, v, r)
-	bottom := infoView
+	left := v
+	right := lipgloss.JoinVertical(0, preview, infoView)
 
-	mainbody := lipgloss.JoinVertical(0, top, bottom)
+	mainbody := lipgloss.JoinHorizontal(0, left, right)
 
 	if !m.showSearch {
 		return mainbody
