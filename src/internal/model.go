@@ -50,6 +50,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, nil
 		case "q":
 			return m, tea.Quit
+		case "h":
+			m.showHidden = !m.showHidden
+			break
 		case "up":
 			if m.list.cursor > 0 {
 				m.list.cursor -= 1
@@ -111,7 +114,7 @@ func (m Model) View() string {
 		return m.RenderDialog(70, 50, HELP_CONTENT)
 	}
 
-	files := getFiles(m.list.title)
+	files := getFiles(m.list.title, m.showHidden)
 	list := m.list
 	list.items = files
 	list.width = (w / 2) - 2
@@ -130,7 +133,7 @@ func (m Model) View() string {
 
 	r := ""
 	if selected.itemType == FileDir {
-		files := getFiles(subPath)
+		files := getFiles(subPath, m.showHidden)
 		lr := List{
 			title:     subPath,
 			width:     list.width,

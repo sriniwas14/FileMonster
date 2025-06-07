@@ -13,4 +13,5 @@ p    -    Paste from Clipboard
 /    -    Filter
 g    -    Fuzzy Find
 o    -    Open File
+h    -    Toggle Hidden
 `

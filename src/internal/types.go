@@ -7,6 +7,7 @@ type Model struct {
 	height     int
 	showHelp   bool
 	showSearch bool
+	showHidden bool
 	searchText string
 }
 

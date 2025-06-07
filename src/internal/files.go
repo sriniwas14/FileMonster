@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-func getFiles(path string) []File {
+func getFiles(path string, showHidden bool) []File {
 	items, err := os.ReadDir(path)
 
 	if err != nil {
@@ -23,6 +23,11 @@ func getFiles(path string) []File {
 		fileType := FileFile
 		if item.IsDir() {
 			fileType = FileDir
+		}
+		fName := item.Name()
+
+		if fName[0] == '.' && !showHidden {
+			continue
 		}
 
 		files = append(files, File{
