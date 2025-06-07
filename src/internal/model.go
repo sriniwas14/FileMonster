@@ -72,7 +72,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			cmd.Stdout = os.Stdout
 			cmd.Stderr = os.Stderr
 
+			fmt.Println("Editor Started!")
 			err := cmd.Run()
+			fmt.Println("Editor Stopped!")
+
 			if err != nil {
 				fmt.Println("Error launching vim:", err)
 			}
