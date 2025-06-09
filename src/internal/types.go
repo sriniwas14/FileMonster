@@ -1,14 +1,28 @@
 package internal
 
+type ActionType string
+
+const (
+	ActionNew    ActionType = "new"
+	ActionRename            = "rename"
+	ActionDelete            = "delete"
+)
+
+type Action struct {
+	action  ActionType
+	visible bool
+}
+
 type Model struct {
-	path       string
-	list       *List
-	width      int
-	height     int
-	showHelp   bool
-	showSearch bool
-	showHidden bool
-	searchText string
+	path         string
+	list         *List
+	width        int
+	height       int
+	showHelp     bool
+	showSearch   bool
+	showHidden   bool
+	searchText   string
+	actionDialog Action
 }
 
 type List struct {

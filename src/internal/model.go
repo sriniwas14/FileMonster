@@ -23,20 +23,29 @@ func (m *Model) handleTextInput(key string) {
 			m.searchText = m.searchText[:len(m.searchText)-1]
 		}
 		break
+	case "esc":
+		m.showSearch = false
+
+		break
 	default:
 		m.searchText += key
 	}
 }
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	if m.actionDialog.visible {
+		m.actionDialog.Update(msg)
+	}
+
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
+		if m.showSearch {
+			m.handleTextInput(msg.String())
+		}
 		switch msg.String() {
 		default:
-			if m.showSearch {
-				m.handleTextInput(msg.String())
-				break
-			}
+
+			break
 		case "?":
 			m.showHelp = true
 			return m, nil
@@ -66,6 +75,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "left":
 			m.list.title = filepath.Dir(m.list.title)
 			m.list.cursor = 0
+			break
+		case "d":
+			m.actionDialog.action = ActionDelete
+			m.actionDialog.visible = true
 			break
 		case "o":
 			selected := m.list.items[m.list.cursor]
@@ -121,7 +134,7 @@ func (m Model) View() string {
 	list := m.list
 	list.items = files
 	list.width = (w / 2) - 2
-	list.height = h - 2
+	list.height = h - 4
 	m.list.visibleItems = h - 2
 	v = list.Render(m.searchText)
 
@@ -159,7 +172,19 @@ func (m Model) View() string {
 	left := v
 	right := lipgloss.JoinVertical(0, preview, infoView)
 
+	dialog := ""
 	mainbody := lipgloss.JoinHorizontal(0, left, right)
+	if m.actionDialog.visible {
+		dialogPane := m.actionDialog.View()
+		dialog = lipgloss.Place(
+			w,
+			h,
+			lipgloss.Center,
+			lipgloss.Center,
+			dialogPane,
+		)
+		return dialog
+	}
 
 	if !m.showSearch {
 		return mainbody
@@ -167,7 +192,23 @@ func (m Model) View() string {
 
 	commandPane := "Search: " + m.searchText
 
-	return lipgloss.JoinVertical(0, mainbody, commandPane)
+	render := lipgloss.JoinVertical(0, mainbody, commandPane)
+
+	// TODO: Dialog should be transparent
+	x := []byte{}
+
+	render = mainbody + "\n" + commandPane
+	for i := range dialog {
+		if dialog[i] != ' ' {
+			x = append(x, dialog[i])
+		} else {
+			x = append(x, render[i])
+		}
+
+	}
+
+	return string(render)
+
 }
 
 func Start(path string) Model {
@@ -178,6 +219,10 @@ func Start(path string) Model {
 			cursor:    0,
 			title:     path,
 			showTitle: true,
+		},
+		actionDialog: Action{
+			action:  "",
+			visible: false,
 		},
 		showHelp: false,
 	}

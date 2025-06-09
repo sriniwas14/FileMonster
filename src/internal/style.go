@@ -17,4 +17,9 @@ var (
 				BorderForeground(lipgloss.Color("0"))
 
 	titleStyleColor = lipgloss.NewStyle().Foreground(lipgloss.Color("140"))
+	dialogStyle     = lipgloss.NewStyle().
+			Border(lipgloss.RoundedBorder()).
+			Padding(1, 2).
+			Width(30).
+			Align(lipgloss.Center)
 )
