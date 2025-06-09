@@ -22,7 +22,7 @@ type Model struct {
 	showSearch   bool
 	showHidden   bool
 	searchText   string
-	actionDialog Action
+	actionDialog *Action
 }
 
 type List struct {

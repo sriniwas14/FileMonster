@@ -135,7 +135,7 @@ func (m Model) View() string {
 	list.items = files
 	list.width = (w / 2) - 2
 	list.height = h - 4
-	m.list.visibleItems = h - 2
+	m.list.visibleItems = h - 6
 	v = list.Render(m.searchText)
 
 	// File Info View
@@ -157,7 +157,7 @@ func (m Model) View() string {
 			height:       list.height,
 			items:        files,
 			cursor:       0,
-			visibleItems: (h / 2),
+			visibleItems: (h / 2) - 1,
 			showTitle:    false,
 		}
 		preview = lr.Render(m.searchText)
@@ -220,7 +220,7 @@ func Start(path string) Model {
 			title:     path,
 			showTitle: true,
 		},
-		actionDialog: Action{
+		actionDialog: &Action{
 			action:  "",
 			visible: false,
 		},

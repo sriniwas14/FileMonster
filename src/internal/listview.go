@@ -31,9 +31,11 @@ func (l *List) Render(search string) string {
 	start := 0
 	end := visibleItems
 
-	if l.cursor > visibleItems {
+	if l.cursor+1 > visibleItems {
+		// start = l.cursor - visibleItems + 1
+		// end = start + visibleItems
 		start = l.cursor - visibleItems + 1
-		end = start + visibleItems
+		end = l.cursor + 1
 	}
 
 	if end > len(l.items) {
@@ -42,12 +44,13 @@ func (l *List) Render(search string) string {
 
 	list := ""
 	if l.showTitle {
-		list = paneStyleBottomBorder.Render(padX(l.title, l.width)) + "\n"
+		list = paneStyleBottomBorder.Render(fitX(l.title, l.width)) + "\n"
 	}
 	for i, f := range l.items[start:end] {
 		// One is for files the other is for folders
 		temp := f.name
 
+		// Highlight searched item
 		if len(search) > 0 && strings.Contains(temp, search) {
 			temp = fmt.Sprintf(listStyleSearchMatch.Render("%s"), temp)
 		}
